@@ -46,7 +46,7 @@ def train_step(
 
         # calculate the loss
         loss = loss_fn(y_pred, y)
-        train_loss += loss
+        train_loss += loss.item()
         # optimizer zero grad
         optimizer.zero_grad()
 
@@ -97,7 +97,7 @@ def test_step(
         y_pred_logits = model(X)
 
         loss = loss_fn(y_pred_logits, y)
-        test_loss += loss
+        test_loss += loss.item()
         y_pred_prob = torch.softmax(y_pred_logits, dim=1)
         y_pred_labels = torch.argmax(y_pred_prob, dim=1)
 
@@ -151,14 +151,12 @@ def train(
     results = {"test_acc": [], "train_acc": [], "test_loss": [], "train_loss": []}
 
     for epoch in tqdm(range(epochs)):
-        train_loss, train_acc = (
-            train_step(
-                model=model,
-                data_loader=train_dataloader,
-                optimizer=optimizer,
-                loss_fn=loss_fn,
-                device=device,
-            ),
+        train_loss, train_acc = train_step(
+            model=model,
+            data_loader=train_dataloader,
+            optimizer=optimizer,
+            loss_fn=loss_fn,
+            device=device,
         )
         test_loss, test_acc = test_step(
             model=model,
