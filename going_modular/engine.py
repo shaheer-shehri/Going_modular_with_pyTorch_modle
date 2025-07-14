@@ -93,6 +93,7 @@ def test_step(
 
     test_acc, test_loss = 0, 0
     for batch, (X, y) in enumerate(data_loader):
+         X, y = X.to(device), y.to(device)
         # forward pass
         y_pred_logits = model(X)
 
